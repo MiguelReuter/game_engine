@@ -3,4 +3,6 @@ WIP :
 
 # Dependencies
 
-SDL2 SDL2-image
+  SDL2 SDL2-image
+
+makefile coming soon...
