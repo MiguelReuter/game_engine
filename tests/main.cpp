@@ -117,7 +117,7 @@ int main(int argc, char * argv[]) {
 
     // focus camera
     game_engine->graphics_engine->getCurrentCamera()->setFocusOn(character);
-    game_engine->graphics_engine->getCurrentCamera()->setZoom(2);
+    game_engine->graphics_engine->getCurrentCamera()->setZoom(1);
 
     int frames_nb = 0;
     int t2, t1, T2, T1;

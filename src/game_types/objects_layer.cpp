@@ -22,7 +22,7 @@ ObjectsLayer::ObjectsLayer(vector<Sprite*> objects_list, int z_pos, float parall
 
 void ObjectsLayer::deleteObject(Sprite *object)
 {
-    for(int i=0;i<objects.size();i++)
+    for(uint i=0;i<objects.size();i++)
     {
         if (object == objects[i])
             objects.erase(objects.begin() + i);
@@ -31,7 +31,7 @@ void ObjectsLayer::deleteObject(Sprite *object)
 
 ObjectsLayer::~ObjectsLayer()
 {
-    for (int i=0; i<objects.size(); i++)
+    for (uint i=0; i<objects.size(); i++)
         delete objects[i];
     objects.clear();
 }

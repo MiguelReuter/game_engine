@@ -73,7 +73,7 @@ void GraphicsEngine::drawObjectsLayers(vector<ObjectsLayer*> *objects_layers)
 
 void GraphicsEngine::deleteObject(GameObject *object)
 {
-    for (int i=0; i<cameras.size(); i++)
+    for (unsigned int i=0; i<cameras.size(); i++)
         cameras[i]->deleteObject(object);
 
     texture_manager->deleteTexture(object->texture);
@@ -115,7 +115,7 @@ void GraphicsEngine::init()
 
 void GraphicsEngine::quit()
 {
-    for (int i=0; i<cameras.size(); i++)
+    for (unsigned int i=0; i<cameras.size(); i++)
         delete cameras[i];
 
     SDL_DestroyRenderer(renderer);

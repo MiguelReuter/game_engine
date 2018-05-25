@@ -16,17 +16,17 @@ bool CircleDynamicBody::intersectCircleRect(const SDL_Rect* A_circle, const SDL_
         left-bottom: 4, left-top: 5, right-top: 6, right-bottom: 7
      else: -1
     */
-    
-    
+
+
     SDL_Rect rects_result;//, coll_rect;
     /*coll_rect.x = A_circle->x - 1; y = bounding_rect.y - 1;
     coll_rect.w = bounding_rect.w + 2; coll_rect.h = bounding_rect.h + 2;*/
-    
+
     if (SDL_IntersectRect(A_circle, B, &rects_result) == SDL_TRUE) {
         float radius = A_circle->w / 2.0;
         SDL_Point center;
         center.x = A_circle->w / 2 + A_circle->x; center.y = A_circle->h / 2 + A_circle->y;
-        
+
         // ---------- SIDE COLLISIONS ----------
         // check for bottom and top side collisions
         if ( B->x <= center.x and center.x <= B->x + B->w) {
@@ -41,7 +41,7 @@ bool CircleDynamicBody::intersectCircleRect(const SDL_Rect* A_circle, const SDL_
                 result->y = B->y + B->h;
                 *intersect_type = TOP_INTERSECT;
             }
-                
+
             return true;
         }
         // check for left and right side collisions
@@ -52,16 +52,16 @@ bool CircleDynamicBody::intersectCircleRect(const SDL_Rect* A_circle, const SDL_
                 result->x = B->x;
                 *intersect_type = RIGHT_INTERSECT;
             }
-                
+
             // left collision
             else {
                 result->x = B->x + B->w;
                 *intersect_type = LEFT_INTERSECT;
             }
-                
+
             return true;
         }
-        
+
         // ---------- CORNER COLLISIONS ----------
         // top left corner
         if ( pow(center.x - B->x, 2) + pow(center.y - B->y, 2) <= pow(radius, 2) ) {
@@ -103,26 +103,26 @@ void CircleDynamicBody::update(vector<StaticBody *> static_bodies, vector<Dynami
 void CircleDynamicBody::updateCollisions(vector<StaticBody*> static_bodies, vector<DynamicBody*> dynamic_bodies)
 {
     SDL_Rect coll_rect;
-    
+
     coll_rect.x = bounding_rect.x - 1;
     coll_rect.y = bounding_rect.y - 1;
     coll_rect.w = bounding_rect.w + 2;
     coll_rect.h = bounding_rect.h + 2;
-    
+
     SDL_Point center;
     center.x = coll_rect.w / 2 + coll_rect.x;
     center.y = coll_rect.h / 2 + coll_rect.y;
-    
+
     // ---------- STATIC COLLISIONS ----------
-    for (int i=0; i<4; i++)
+    for (unsigned int i=0; i<4; i++)
         static_coll_bodies[i].clear();
-    for (int i=0; i<static_bodies.size(); i++) {
+    for (unsigned int i=0; i<static_bodies.size(); i++) {
         StaticBody* object = static_bodies[i];
         SDL_Rect* obj_rect = &object->bounding_rect;
-        
+
         SDL_Point collision_point;
         int* intersect_type = new int;
-        
+
         if (intersectCircleRect(&bounding_rect, obj_rect, &collision_point, intersect_type) == true) {
             // bottom collision
             if ( !ghost_sides[BOTTOM] and !object->ghost_sides[TOP] ) {
@@ -131,19 +131,19 @@ void CircleDynamicBody::updateCollisions(vector<StaticBody*> static_bodies, vect
                     static_coll_bodies[BOTTOM].push_back(object);
                 }
             }
-            
+
             // top collision
             if ( !ghost_sides[TOP] and !object->ghost_sides[BOTTOM] ) {
                 if ( -(collision_point.y - center.y) >= abs(collision_point.x - center.x) and dxy[1] - object->dxy[1] < 0 )
                     static_coll_bodies[TOP].push_back(object);
             }
-            
+
             // right collision
             if ( !ghost_sides[RIGHT] and !object->ghost_sides[LEFT] ) {
                 if ( collision_point.x - center.x >= abs(collision_point.y - center.y) and dxy[0] - object->dxy[0] > 0 )
                     static_coll_bodies[RIGHT].push_back(object);
             }
-            
+
             // left collision
             if ( !ghost_sides[LEFT] and !object->ghost_sides[RIGHT] ) {
                 if ( - (collision_point.x - center.x) >= abs(collision_point.y - center.y) and dxy[0] - object->dxy[0] < 0 )
@@ -152,18 +152,18 @@ void CircleDynamicBody::updateCollisions(vector<StaticBody*> static_bodies, vect
         }
         delete intersect_type;
     }
-    
-    
+
+
     // ---------- DYNAMIC COLLISIONS ----------
-    for (int i=0; i<4; i++)
+    for (unsigned int i=0; i<4; i++)
         dynamic_coll_bodies[i].clear();
-    for (int i=0; i<static_bodies.size(); i++) {
+    for (unsigned int i=0; i<static_bodies.size(); i++) {
         DynamicBody* object = dynamic_bodies[i];
         SDL_Rect* obj_rect = &object->bounding_rect;
-        
+
         SDL_Point collision_point;
         int* intersect_type = new int;
-        
+
         if (intersectCircleRect(&bounding_rect, obj_rect, &collision_point, intersect_type) == true) {
             // bottom collision
             if ( !ghost_sides[BOTTOM] and !object->ghost_sides[TOP] ) {
@@ -172,19 +172,19 @@ void CircleDynamicBody::updateCollisions(vector<StaticBody*> static_bodies, vect
                     dynamic_coll_bodies[BOTTOM].push_back(object);
                 }
             }
-            
+
             // top collision
             if ( !ghost_sides[TOP] and !object->ghost_sides[BOTTOM] ) {
                 if ( -(collision_point.y - center.y) >= abs(collision_point.x - center.x) and dxy[1] - object->dxy[1] < 0 )
                     dynamic_coll_bodies[TOP].push_back(object);
             }
-            
+
             // right collision
             if ( !ghost_sides[RIGHT] and !object->ghost_sides[LEFT] ) {
                 if ( collision_point.x - center.x >= abs(collision_point.y - center.y) and dxy[0] - object->dxy[0] > 0 )
                     dynamic_coll_bodies[RIGHT].push_back(object);
             }
-            
+
             // left collision
             if ( !ghost_sides[LEFT] and !object->ghost_sides[RIGHT] ) {
                 if ( - (collision_point.x - center.x) >= abs(collision_point.y - center.y) and dxy[0] - object->dxy[0] < 0 )
@@ -198,46 +198,46 @@ void CircleDynamicBody::updateCollisions(vector<StaticBody*> static_bodies, vect
 
 void CircleDynamicBody::resolveCollisions(vector<StaticBody*> static_bodies, vector<DynamicBody*> dynamic_bodies)
 {
-    
+
     // idée : si collision avec coin haut gauche d'un rect, on considère 2 collisions et pas une seule. --> chaque collision est gérée en déplaçant le cercle sur uniquement un axe.
-    
-    
+
+
     updateCollisions(static_bodies, dynamic_bodies);
     is_falling = true;
-    
+
     int radius = bounding_rect.w / 2;
-    
-    for (int i=0; i<static_coll_bodies[BOTTOM].size(); i++)
+
+    for (unsigned int i=0; i<static_coll_bodies[BOTTOM].size(); i++)
     {
         Body* object = static_coll_bodies[BOTTOM][i];
         SDL_Point collision_point;
         int* intersect_type = new int;
-        
+
         SDL_Point center;
         center.x = bounding_rect.w / 2 + bounding_rect.x;
         center.y = bounding_rect.h / 2 +
         bounding_rect.y;
-        
+
         if ( intersectCircleRect(&bounding_rect, &object->bounding_rect, &collision_point, intersect_type) )
         {
             // process dx and dy (the circle is moved appart on the line center/collision point)
             float MC = sqrt(pow(center.x - collision_point.x, 2) + pow(center.y - collision_point.y, 2));
             float dx = 0, dy = 0;
-            
+
             if ( MC != 0 and MC < radius ) {
                 dx = (radius / MC - 1) * (center.x - collision_point.x);
                 dy = (radius / MC - 1) * (center.y - collision_point.y);
             }
-            
+
             // if circle is on the ground
             if ( object->bounding_rect.x <= center.x and center.x <= object->bounding_rect.x + object->bounding_rect.w ) {
                 on_body = object;
                 is_falling = false;
-                    
+
                 dy = object->bounding_rect.y - (bounding_rect.y + bounding_rect.h);
                 dxy[1] += dy;
                 dxy[1] = min(dxy[1], object->dxy[1]);
-                    
+
                 bounding_rect.y = object->bounding_rect.y - bounding_rect.h;
             }
             else if (!is_falling)
@@ -249,9 +249,9 @@ void CircleDynamicBody::resolveCollisions(vector<StaticBody*> static_bodies, vec
         }
         delete intersect_type;
     }
-    
-    
-    
+
+
+
     /*
     vector<Body*> bodies;
     // dynamic collision
@@ -263,7 +263,7 @@ void CircleDynamicBody::resolveCollisions(vector<StaticBody*> static_bodies, vec
         bodies.push_back(dynamic_coll_bodies[TOP][i]);
     for(int i=0; i<dynamic_coll_bodies[BOTTOM].size(); i++)
         bodies.push_back(dynamic_coll_bodies[BOTTOM][i]);
-    
+
     // static collision
     for(int i=0; i<static_coll_bodies[LEFT].size(); i++)
         bodies.push_back(static_coll_bodies[LEFT][i]);
@@ -273,39 +273,39 @@ void CircleDynamicBody::resolveCollisions(vector<StaticBody*> static_bodies, vec
         bodies.push_back(static_coll_bodies[TOP][i]);
     for(int i=0; i<static_coll_bodies[BOTTOM].size(); i++)
         bodies.push_back(static_coll_bodies[BOTTOM][i]);
-    
-    
+
+
     int radius = bounding_rect.w / 2;
-    
+
     for (int i=0; i<bodies.size(); i++)
     {
         Body* object = bodies[i];
         SDL_Point collision_point;
-        
+
         SDL_Point center;
         center.x = bounding_rect.w / 2 + bounding_rect.x;
         center.y = bounding_rect.h / 2 +
         bounding_rect.y;
-        
+
         if ( intersectCircleRect(&bounding_rect, &object->bounding_rect, &collision_point) ) {
             // process dx and dy (the circle is moved appart on the line center/collision point)
             float MC = sqrt(pow(center.x - collision_point.x, 2) + pow(center.y - collision_point.y, 2));
             float dx = 0, dy = 0;
-            
+
             if ( MC != 0 and MC < radius ) {
                 dx = (radius / MC - 1) * (center.x - collision_point.x);
                 dy = (radius / MC - 1) * (center.y - collision_point.y);
             }
-            
+
             // if circle is on the ground
             if ( object->bounding_rect.x <= center.x and center.x <= object->bounding_rect.x + object->bounding_rect.w and object->bounding_rect.y > center.y) {
                 onBody = object;
                 is_falling = false;
-                
+
                 dy = object->bounding_rect.y - (bounding_rect.y + bounding_rect.h);
                 dxy[1] += dy;
                 dxy[1] = min(dxy[1], object->dxy[1]);
-                
+
                 bounding_rect.y = object->bounding_rect.y - bounding_rect.h;
             }
             else if (!is_falling)
@@ -314,8 +314,8 @@ void CircleDynamicBody::resolveCollisions(vector<StaticBody*> static_bodies, vec
                 dxy[1] += dy;
                 bounding_rect.y += dy;
             }
-            
-            
+
+
             if (dx > 0 and canMoveAtRight()) {
                 dxy[0] += dx;
                 bounding_rect.x += dx;
@@ -328,11 +328,11 @@ void CircleDynamicBody::resolveCollisions(vector<StaticBody*> static_bodies, vec
         }
     }
     */
-    
-    
+
+
     if (is_falling)
         on_body = nullptr;
-     
+
 }
 
 
@@ -344,29 +344,29 @@ void CircleDynamicBody::applyNewtonLaw()
     }
     else
         addForce(- 0.05 * dxy[0] * on_body->friction_coefficient, 0); // ground friction
-    
+
     // Newtons's 3rd Law
     dxy[0] += PIXELS_NB_PER_METER * pow(NOMINAL_DT, 2) / mass * (force[0] + collision_force[0]);
     dxy[1] += PIXELS_NB_PER_METER * pow(NOMINAL_DT, 2) / mass * (force[1] + collision_force[1]);
-    
+
     // limit dxy to current_max_dxy
     if (dxy[0] > 0)
         dxy[0] = min(current_max_dxy[0], dxy[0]);
     else if (dxy[0] < 0)
         dxy[0] = max(-current_max_dxy[0], dxy[0]);
-    
+
     if (dxy[1] > 0)
         dxy[1] = min(current_max_dxy[1], dxy[1]);
     else if (dxy[1] < 0)
         dxy[1] = max(-current_max_dxy[1], dxy[1]);
-    
+
     // reset forces
     force[0] = .0; force[1] = .0;
     collision_force[0] = .0; collision_force[1] = .0;
-    
+
     bounding_rect.x += round(dxy[0]);
     bounding_rect.y += round(dxy[1]);
-    
+
     if (on_body != nullptr)
         bounding_rect.x += on_body->dxy[0];
 }
