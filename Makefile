@@ -1,4 +1,4 @@
-CC = g++-5
+CC = g++
 CFLAGS = -std=c++14 -O3
 EXEC_NAME = bin/game
 LDFLAGS = -lSDL2 -lSDL2_image
