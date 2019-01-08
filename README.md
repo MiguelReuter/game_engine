@@ -1,6 +1,6 @@
 # Game Engine
 
-WIP : 2D game engine developped in C++ from scratch, using SDL2 library.
+WIP : 2D game engine developed in C++ from scratch, using SDL2 library.
 
 # Features
 
@@ -8,13 +8,23 @@ WIP : 2D game engine developped in C++ from scratch, using SDL2 library.
 + Graphics engine :
     + sprites display
     + animated sprites with several modes (Loop, reversed ...)
-    + sprites stored in independant layers
+    + sprites stored in independent layers
     + parallax effect for each sprites layer
 + Events engine :
     + keyboard events
-# Dependencies
 
-SDL2 and SDL2-image are recquired for building
+* * *
 
-## Ubuntu :
-    sudo apt install libsdl2-dev libsdl2-image-dev
+# Compilation and Usage
+## Dependencies [Ubuntu]
+SDL2 and SDL2-image are required for building :
+
+	sudo apt install libsdl2-dev libsdl2-image-dev
+
+## Compilation
+	make
+
+## Running
+	bin/game
+
+
