@@ -13,6 +13,11 @@ WIP : 2D game engine developed in C++ from scratch, using SDL2 library.
 + Events engine :
     + keyboard events
 
+# Demo
+
+![](demo.gif)
+
+
 * * *
 
 # Compilation and Usage
